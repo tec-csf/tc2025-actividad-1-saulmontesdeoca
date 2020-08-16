@@ -32,7 +32,7 @@ typedef struct {
 typedef struct
 {
     int occupied;
-    patient * patientNumber;
+    int patientNumber;
 } bed;
 
 int findFreeBed(bed * beds, int totalNumberOfBeds)
@@ -79,11 +79,17 @@ int main(int argc, char **argv)
     int freeBedPosition;
     bed * freeBed;
 
+    int totalNumberOfPatients = 1;
+    patient *formerPatient = listOfPatients;
+    patient *patientIterator;
+    int patientNumber;
+    int bedToDischarge;
+
     freeBedPosition = findFreeBed(beds, totalNumberOfBeds);
 
     freeBed = beds + freeBedPosition;
     freeBed->occupied = 1;
-    freeBed->patientNumber = listOfPatients;
+    freeBed->patientNumber = totalNumberOfPatients -1;
 
     //Adding first patient
     listOfPatients->firstName = (char *) malloc(sizeof(char) * 20);
@@ -102,12 +108,6 @@ int main(int argc, char **argv)
     //     listOfPatients->phoneNumber,
     //     listOfPatients->bedAssigned);
 
-    int totalNumberOfPatients = 1;
-    patient * formerPatient = listOfPatients;
-    patient *patientIterator;
-    int patientNumber;
-    int bedToDischarge;
-
     int answer;
     do
     {
@@ -116,153 +116,200 @@ int main(int argc, char **argv)
 
         switch (answer)
         {
-        case 1:
-            //enter patient
-            totalNumberOfPatients++;
-            listOfPatients = (patient *)realloc(listOfPatients, sizeof(patient) * (totalNumberOfPatients));
-            formerPatient = listOfPatients + totalNumberOfPatients -1;
-            formerPatient->firstName = (char *) malloc(sizeof(char) * 20);
-            formerPatient->lastName = (char *) malloc(sizeof(char) * 30);
-
-            printf("Patient's first name : ");
-            scanf("%s", formerPatient->firstName);
-            // fgets(formerPatient->firstName, 20, stdin);
-            
-
-            printf("Patient's last name : ");
-            scanf("%s", formerPatient->lastName);
-            // fgets(formerPatient->lastName, 30, stdin);
-
-            printf("Patient's age : ");
-            scanf("%d", &formerPatient->age);
-
-            printf("Patient's contact number : ");
-            scanf("%lu", &formerPatient->phoneNumber);
-
-            formerPatient->active = 1;
-
-            freeBedPosition = findFreeBed(beds, totalNumberOfBeds);
-            if (freeBedPosition != -1)
-            {
-                freeBed = beds + freeBedPosition;
-                freeBed->occupied = 1;
-                freeBed->patientNumber = formerPatient;
-                printf("Bed assigned : %d\n", freeBedPosition);
-            } else
-            {
-                printf("There aren't any beds available. Please ingress more beds.\n");
-            }
-            formerPatient->bedAssigned = freeBedPosition;
-            // printf("Second patient is: %s %s, Age: %d, phone number: %lu, Bed Assigned: %d\n",
-            //        formerPatient->firstName,
-            //        formerPatient->lastName,
-            //        formerPatient->age,
-            //        formerPatient->phoneNumber,
-            //        formerPatient->bedAssigned);
-            printf("\n");
-
-            break;
-
-        case 2:
-            finalBed = beds + totalNumberOfBeds;
-            bedNumber = 1;
-            printf("Number of beds: %d\n", totalNumberOfBeds);
-            for (bedIterator = beds; bedIterator < finalBed; bedIterator++)
-            {
-                // printf("Bed %d %d\n", bedNumber, bedIterator->occupied);
-                if (bedIterator->occupied == 1)
-                {
-                    // printf("%d", bedIterator->occupied);
-                    printf("Bed %d\t Occupied by patient: %s %s\n", bedNumber, (bedIterator->patientNumber)->firstName, (bedIterator->patientNumber)->lastName);
-                }
-                else
-                {
-                    printf("Bed %d\t Free\n", bedNumber);
-                }
-                bedNumber++;
-            }
-            printf("\n");
-            printf("Enter the patient's bed number which you want to discharge (Go back enter 0):\n");
-            scanf("%d", &bedToDischarge);
-            if (bedToDischarge != 0)
-            {
-                finalBed = beds + bedToDischarge - 1;
-
-                //Freeing from list of patients
-                finalBed->patientNumber->active = 0;
-                //Freeing bed
-                finalBed->occupied = 0;
-                finalBed->patientNumber = NULL;
+            case 1:
+                printf("******************** New Patient ********************\n");
                 printf("\n");
-                printf("Patient discharged correctly\n");
-            }
-            printf("\n");
-            break;
+                //enter patient
+                totalNumberOfPatients++;
+                listOfPatients = (patient *)realloc(listOfPatients, sizeof(patient) * (totalNumberOfPatients));
+                formerPatient = listOfPatients + totalNumberOfPatients -1;
+                formerPatient->firstName = (char *) malloc(sizeof(char) * 20);
+                formerPatient->lastName = (char *) malloc(sizeof(char) * 30);
 
-        case 3:
-            patientNumber = 1;
-            for (patientIterator = listOfPatients; patientIterator <= formerPatient; ++patientIterator)
-            {
-                if (patientIterator->active)
+                printf("Patient's first name : ");
+                scanf("%s", formerPatient->firstName);
+                // fgets(formerPatient->firstName, 20, stdin);
+                
+
+                printf("Patient's last name : ");
+                scanf("%s", formerPatient->lastName);
+                // fgets(formerPatient->lastName, 30, stdin);
+
+                printf("Patient's age : ");
+                scanf("%d", &formerPatient->age);
+
+                printf("Patient's contact number : ");
+                scanf("%lu", &formerPatient->phoneNumber);
+
+                formerPatient->active = 1;
+
+                freeBedPosition = findFreeBed(beds, totalNumberOfBeds);
+                if (freeBedPosition != -1)
                 {
-                    printf("Patient #%d\n", patientNumber);
-                    printf("\tName: %s %s\n", patientIterator->firstName, patientIterator->lastName);
-                    printf("\tAge: %d\n", patientIterator->age);
-                    printf("\tContact number: %lu\n", patientIterator->phoneNumber);
-                    if (patientIterator->bedAssigned == -1)
+                    freeBed = beds + freeBedPosition;
+                    freeBed->occupied = 1;
+                    freeBed->patientNumber = totalNumberOfPatients - 1;
+                    printf("Bed assigned : %d\n", freeBedPosition + 1);
+                } else
+                {
+                    printf("There aren't any beds available. Please ingress more beds.\n");
+                }
+                formerPatient->bedAssigned = freeBedPosition;
+                // printf("Second patient is: %s %s, Age: %d, phone number: %lu, Bed Assigned: %d\n",
+                //        formerPatient->firstName,
+                //        formerPatient->lastName,
+                //        formerPatient->age,
+                //        formerPatient->phoneNumber,
+                //        formerPatient->bedAssigned);
+                printf("**************************  |  ***********************\n");
+                printf("\n");
+                printf("\n");
+
+                break;
+
+            case 2:
+                printf("******************** Discharge Patient ********************\n");
+                printf("\n");
+                finalBed = beds + totalNumberOfBeds;
+                bedNumber = 1;
+                printf("Number of beds: %d\n", totalNumberOfBeds);
+                for (bedIterator = beds; bedIterator < finalBed; bedIterator++)
+                {
+                    formerPatient = listOfPatients + bedIterator->patientNumber;
+
+                    // printf("Bed %d %d\n", bedNumber, bedIterator->occupied);
+                    if (bedIterator->occupied == 1)
                     {
-                        printf("\tBed not assigned\n");
+                        // printf("%d", bedIterator->occupied);
+                        printf("Bed %d\t Occupied by patient: %s %s\n", bedNumber, formerPatient->firstName, formerPatient->lastName);
                     }
                     else
                     {
-                        printf("\tBed assigned: %d\n", patientIterator->bedAssigned + 1);
+                        printf("Bed %d\t Free\n", bedNumber);
                     }
-
-                    printf("\n");
+                    bedNumber++;
                 }
-                
-                ++patientNumber;
-            }
-            printf("\n");
-            break;
-
-        case 4:
-            finalBed = beds + totalNumberOfBeds;
-            bedNumber = 1;
-            printf("Number of beds: %d\n", totalNumberOfBeds);
-            for (bedIterator = beds; bedIterator < finalBed; bedIterator++)
-            {
-                // printf("Bed %d %d\n", bedNumber, bedIterator->occupied);
-                if (bedIterator->occupied == 1)
+                printf("\n");
+                printf("Enter the patient's bed number which you want to discharge (Go back enter 0):\n");
+                scanf("%d", &bedToDischarge);
+                if (bedToDischarge != 0)
                 {
-                    // printf("%d", bedIterator->occupied);
-                    printf("Bed %d\t Occupied by patient: %s %s\n", bedNumber, (bedIterator->patientNumber)->firstName, (bedIterator->patientNumber)->lastName);
+                    finalBed = beds + bedToDischarge - 1;
+                    if (finalBed->occupied != 1)
+                    {
+                        printf("\n");
+                        printf("**************************  |  **************************\n");
+                        printf("****************** Bed is already free  *****************\n");
+                        printf("**************************  |  **************************\n");
+                    }
+                    else
+                    {
+                        //Freeing from list of patients
+                        formerPatient = listOfPatients + finalBed->patientNumber;
+                        formerPatient->active = 0;
+                        //Freeing bed
+                        finalBed->occupied = 0;
+                        finalBed->patientNumber = 0;
+                        printf("\n");
+                        printf("**************************  |  **************************\n");
+                        printf("************* Patient discharged correctly  *************\n");
+                        printf("**************************  |  **************************\n");
+                    }
+                    
                 }
-                else
+                printf("\n");
+                break;
+
+            case 3:
+                printf("******************** Patients List ********************\n");
+                printf("\n");
+                formerPatient = listOfPatients + totalNumberOfPatients;
+                patientNumber = 1;
+                for (patientIterator = listOfPatients; patientIterator < formerPatient; ++patientIterator)
                 {
-                    printf("Bed %d\t Free\n", bedNumber);
+                    if (patientIterator->active == 1)
+                    {
+                        printf("Patient #%d\n", patientNumber);
+                        printf("\tName: %s %s\n", patientIterator->firstName, patientIterator->lastName);
+                        printf("\tAge: %d\n", patientIterator->age);
+                        printf("\tContact number: %lu\n", patientIterator->phoneNumber);
+                        if (patientIterator->bedAssigned == -1)
+                        {
+                            printf("\tBed not assigned\n");
+                        }
+                        else
+                        {
+                            printf("\tBed assigned: %d\n", patientIterator->bedAssigned + 1);
+                        }
+
+                        printf("\n");
+                    }
+                    
+                    ++patientNumber;
                 }
-                bedNumber++;
-            }
-            printf("\n");
-            break;
+                printf("**************************  |  ***********************\n");
+                printf("\n");
+                printf("\n");
+                break;
 
-        case 5:
-            totalNumberOfBeds += 5;
-            //reallocate memory to totalNumberOfBeds
-            beds = (bed *)realloc(beds, sizeof(bed) * (totalNumberOfBeds));
-            printf("5 more beds added succesfully\n");
-            printf("\n");
-            break;
+            case 4:
+                printf("******************** Beds List ********************\n");
+                printf("\n");
+                finalBed = beds + totalNumberOfBeds;
+                bedNumber = 1;
+                printf("Number of beds: %d\n", totalNumberOfBeds);
+                for (bedIterator = beds; bedIterator < finalBed; bedIterator++)
+                {
+                    formerPatient = listOfPatients + bedIterator->patientNumber;
+                    // printf("Bed %d %d\n", bedNumber, bedIterator->occupied);
+                    if (bedIterator->occupied == 1)
+                    {
+                        // printf("%d", bedIterator->occupied);
+                        printf("Bed %d\t Occupied by patient: %s %s\n", bedNumber, formerPatient->firstName, formerPatient->lastName);
+                    }
+                    else
+                    {
+                        printf("Bed %d\t Free\n", bedNumber);
+                    }
+                    bedNumber++;
+                }
+                printf("\n");
+                printf("**************************  |  ***********************\n");
+                printf("\n");
+                printf("\n");
+                break;
 
-        default:
-            printf("Please enter a valid option\n");
-            break;
+            case 5:
+                totalNumberOfBeds += 5;
+                //reallocate memory to totalNumberOfBeds
+                beds = (bed *)realloc(beds, sizeof(bed) * (totalNumberOfBeds));
+                printf("**************************  |  **************************\n");
+                printf("************ 5 more beds added succesfully  *************\n");
+                printf("**************************  |  **************************\n");
+                printf("\n");
+                printf("\n");
+                break;
+
+            case 0:
+                answer = 0;
+                printf("**************************  |  *****************************\n");
+                printf("******************** See you next time  ********************\n");
+                printf("**************************  |  *****************************\n");
+                printf("\n");
+                break;
+
+            default:
+                printf("**************************  |  **************************\n");
+                printf("************* Please enter a valid option  **************\n");
+                printf("**************************  |  **************************\n");
+                printf("\n");
+                break;
         }
     } while (answer != 0);
 
     // Freeing lisOfPatients
-    for (patientIterator = listOfPatients; patientIterator <= formerPatient; ++patientIterator)
+    patient *lastPatient = listOfPatients + totalNumberOfPatients;
+    for (patientIterator = listOfPatients; patientIterator < lastPatient; ++patientIterator)
     {
         free(patientIterator->firstName);
         free(patientIterator->lastName);
@@ -270,8 +317,6 @@ int main(int argc, char **argv)
     free(listOfPatients);
     //freeing beds
     free(beds);
-
-
 
     return 0;
 }
