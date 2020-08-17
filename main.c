@@ -127,19 +127,19 @@ int main(int argc, char **argv)
                 formerPatient->lastName = (char *) malloc(sizeof(char) * 30);
 
                 printf("Patient's first name : ");
-                scanf("%s", formerPatient->firstName);
+                scanf(" %[^\n]", formerPatient->firstName);
                 // fgets(formerPatient->firstName, 20, stdin);
                 
 
                 printf("Patient's last name : ");
-                scanf("%s", formerPatient->lastName);
+                scanf(" %[^\n]", formerPatient->lastName);
                 // fgets(formerPatient->lastName, 30, stdin);
 
                 printf("Patient's age : ");
-                scanf("%d", &formerPatient->age);
+                scanf(" %d", &formerPatient->age);
 
                 printf("Patient's contact number : ");
-                scanf("%lu", &formerPatient->phoneNumber);
+                scanf(" %lu", &formerPatient->phoneNumber);
 
                 formerPatient->active = 1;
 
